@@ -1,4 +1,5 @@
 import * as express from 'express';
+import loginRoute from './api/Routes/LoginRoutes';
 import teamsRoute from './api/Routes/TeamsRoutes';
 // Vinicius Campos
 
@@ -24,6 +25,7 @@ class App {
     this.app.use(express.json());
     this.app.use(accessControl);
     this.app.use(teamsRoute);
+    this.app.use(loginRoute);
   }
 
   public start(PORT: string | number):void {
