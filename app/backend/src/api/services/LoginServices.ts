@@ -21,4 +21,10 @@ export default class LoginServices implements IServiceLogin {
 
     return user.dataValues;
   }
+
+  async findRoleUser(email: string): Promise<IUser | null> {
+    const data = await this.model.findOne({ where: { email } });
+    if (!data) { return null; }
+    return data.dataValues;
+  }
 }

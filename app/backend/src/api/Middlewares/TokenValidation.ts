@@ -9,9 +9,11 @@ export default function verifyToken(req: Request, res: Response, next: NextFunct
   if (!token) {
     return res.status(TOKEN_NOT_FOUND.status).json({ message: TOKEN_NOT_FOUND.message });
   }
-  const statusToken = JWT.verify(token, secret);
-  if (!statusToken) {
+  try {
+    const statusToken = JWT.verify(token, secret);
+    res.locals.tokenData = statusToken;
+    next();
+  } catch (error) {
     return res.status(INVALID_TOKEN.status).json({ message: INVALID_TOKEN.message });
   }
-  next();
 }
