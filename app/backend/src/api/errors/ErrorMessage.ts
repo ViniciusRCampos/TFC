@@ -14,3 +14,9 @@ export const INVALID_LOGIN = { status: 401, message: 'Invalid email or password'
 
 export const BAD_REQUEST = { status: 400,
   message: 'The request could not be understood by the server due to malformed syntax' };
+
+export const MATCH_ENTITY_ERROR = { status: 422,
+  message: 'It is not possible to create a match with two equal teams' };
+
+export const TEAM_ID_NOT_FOUND = { status: 404,
+  message: 'There is no team with such id!' };
