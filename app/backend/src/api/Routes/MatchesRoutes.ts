@@ -10,8 +10,15 @@ const matchesController = new MatchesController(matchesService);
 matchesRoute.get('/matches', (req: Request, res: Response) => {
   matchesController.readAll(req, res);
 });
+
 matchesRoute.patch('/matches/:id/finish', verifyToken, (req: Request, res: Response) => {
   matchesController.finishMatch(req, res);
 });
 
+matchesRoute.patch('/matches/:id', verifyToken, (req: Request, res: Response) => {
+  matchesController.updateMatch(req, res);
+});
+matchesRoute.post('/matches', verifyToken, (req: Request, res: Response) => {
+  matchesController.insertMatch(req, res);
+});
 export default matchesRoute;

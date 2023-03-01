@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { MATCH_NOT_FOUND } from '../errors/ErrorMessage';
+import { BAD_REQUEST, MATCH_NOT_FOUND } from '../errors/ErrorMessage';
 import IServiceMatches from '../interfaces/IServiceMatches';
 
 export default class MatchesController {
@@ -30,5 +30,24 @@ export default class MatchesController {
       return res.status(MATCH_NOT_FOUND.status).json({ message: MATCH_NOT_FOUND.message });
     }
     res.status(200).json({ message: 'Finished' });
+  }
+
+  async updateMatch(req: Request, res: Response) {
+    const { id } = req.params;
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    const result = await this._service.updateMatch(Number(id), homeTeamGoals, awayTeamGoals);
+    if (!result) {
+      return res.status(MATCH_NOT_FOUND.status).json({ message: MATCH_NOT_FOUND.message });
+    }
+    res.status(200).json({ homeTeamGoals, awayTeamGoals });
+  }
+
+  async insertMatch(req: Request, res: Response) {
+    const data = { ...req.body, inProgress: true };
+    const result = await this._service.insertMatch(data);
+    if (!result) {
+      return res.status(BAD_REQUEST.status).json({ message: BAD_REQUEST.message });
+    }
+    res.status(201).json(result);
   }
 }

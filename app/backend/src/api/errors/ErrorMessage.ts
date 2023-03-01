@@ -11,3 +11,6 @@ export const ALL_FIELDS_REQUIRED = { status: 400, message: 'All fields must be f
 export const INVALID_TOKEN = { status: 401, message: 'Token must be a valid token' };
 
 export const INVALID_LOGIN = { status: 401, message: 'Invalid email or password' };
+
+export const BAD_REQUEST = { status: 400,
+  message: 'The request could not be understood by the server due to malformed syntax' };
