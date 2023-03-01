@@ -7,7 +7,10 @@ const matchesService = new MatchesService();
 const matchesController = new MatchesController(matchesService);
 
 matchesRoute.get('/matches', (req: Request, res: Response) => {
-  matchesController.readAll(req, res);
+  matchesController.filterProgress(req, res);
 });
+// matchesRoute.get('/matches', (req: Request, res: Response) => {
+//   matchesController.readAll(req, res);
+// });
 
 export default matchesRoute;
