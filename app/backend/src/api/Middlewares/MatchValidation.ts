@@ -15,7 +15,6 @@ export default async function matchValidation(req: Request, res: Response, next:
   }
   const homeId = await verifyIdTeam(homeTeamId);
   const awayId = await verifyIdTeam(awayTeamId);
-  console.log(homeId, awayId, 'alouu');
   if (!homeId || !awayId) {
     return res.status(TEAM_ID_NOT_FOUND.status).json({ message: TEAM_ID_NOT_FOUND.message });
   }

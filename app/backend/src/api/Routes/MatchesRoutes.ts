@@ -19,7 +19,7 @@ matchesRoute.patch('/matches/:id/finish', verifyToken, (req: Request, res: Respo
 matchesRoute.patch('/matches/:id', verifyToken, (req: Request, res: Response) => {
   matchesController.updateMatch(req, res);
 });
-matchesRoute.post('/matches', matchValidation, verifyToken, (req: Request, res: Response) => {
+matchesRoute.post('/matches', verifyToken, matchValidation, (req: Request, res: Response) => {
   matchesController.insertMatch(req, res);
 });
 export default matchesRoute;

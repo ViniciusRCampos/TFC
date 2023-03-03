@@ -30,6 +30,7 @@ describe('Tests for services - Team Services', () => {
         //THEN
         expect(result).to.be.equal(outputMock);
         expect(result.length).to.be.equal(1);
+        
     })
     it('Testing Team readTeamById', async () => {
 
@@ -47,6 +48,7 @@ describe('Tests for services - Team Services', () => {
 
         //THEN
         expect(result).to.be.equal(outputMock);
+
     })
     it('Testing Team readTeamById with a invalid id', async () => {
 
@@ -61,6 +63,7 @@ describe('Tests for services - Team Services', () => {
 
         //THEN
         expect(result).to.be.null;
+
     })
 })
 
@@ -69,35 +72,50 @@ describe('Tests for controller - Team controller', () => {
         sinon.restore();
       });
     it('Testing readAll function on controller', async () => {
+
+    // GIVEN
     const outputMock :Teams[] = [ new Teams({ id: 1, teamName: 'Teste' }) ];
+
+    //WHEN
     sinon.stub(Model, 'findAll').resolves(outputMock);
 
     const result = await chai.request(app).get('/teams');
 
+    //THEN
     expect(result).to.be.an('object');
     expect(result.body).to.be.an('array');
-    expect(result.body[0]).to.be.deep.eq(outputMock[0].dataValues)
+    expect(result.body[0]).to.be.deep.eq(outputMock[0].dataValues);
+
     })
 
     it('Testing readTeamById function on controller', async () => {
+
+        // GIVEN
         const outputMock :Teams = new Teams({ id: 1, teamName: 'Teste' });
+
+        //WHEN
         sinon.stub(Model, 'findByPk').resolves(outputMock);
     
         const result = await chai.request(app).get('/teams/1');
-    
+
+        //THEN
         expect(result).to.be.an('object');
         expect(result.body).to.be.deep.eq(outputMock.dataValues)
         expect(result.status).to.be.equal(200);
+
         })
 
 
     it('Testing readTeamById function on controller with invalid id', async () => {
+
+        //WHEN
         sinon.stub(Model, 'findByPk').resolves(null);
-    
         const result = await chai.request(app).get('/teams/0');
-    
+
+        //THEN    
         expect(result).to.be.an('object');
         expect(result.body).to.be.deep.eq({message: ID_NOT_FOUND.message})
         expect(result.status).to.be.equal(ID_NOT_FOUND.status);
+
         })
 })
