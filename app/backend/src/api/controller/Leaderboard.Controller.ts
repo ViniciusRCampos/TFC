@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
-import LeaderboardService from '../services/LeaderboardServices';
+import IServiceLeaderboard from '../interfaces/IServiceLeaderboard';
 
-export default class leaderController {
-  static async test(_req: Request, res: Response) {
-    const data = await LeaderboardService.board();
+export default class leaderboardController {
+  private _service: IServiceLeaderboard;
 
-    res.status(200).json(data);
+  constructor(service: IServiceLeaderboard) {
+    this._service = service;
+  }
+
+  async board(req: Request, res: Response) {
+    const path = req.path.split('/')[2];
+    const data = await this._service.board(path);
+    return res.status(200).json(data);
   }
 }

@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import sequelize = require('sequelize');
 import Matches from '../../database/models/Matches.Model';
-import ILeaderboard, { IDraws, ILosses, IVictories } from '../interfaces/ILeaderboard';
+import ILeaderboard, { IDraws, IEfficiency, ILosses, IVictories } from '../interfaces/ILeaderboard';
 
 async function victories(idTeam: number, teamName: string): Promise<IVictories> {
   const [victory] = await Matches.findAll({
@@ -10,7 +10,7 @@ async function victories(idTeam: number, teamName: string): Promise<IVictories> 
       [sequelize.fn('SUM', sequelize.col('home_team_goals')), 'goalsFavor'],
       [sequelize.fn('SUM', sequelize.col('away_team_goals')), 'goalsOwn'],
     ],
-    where: { homeTeamId: idTeam,
+    where: { awayTeamId: idTeam,
       inProgress: false,
       awayTeamGoals: {
         [Op.gt]: sequelize.col('home_team_goals'),
@@ -29,7 +29,7 @@ async function losses(idTeam: number, teamName: string): Promise<ILosses> {
       [sequelize.fn('SUM', sequelize.col('home_team_goals')), 'goalsFavor'],
       [sequelize.fn('SUM', sequelize.col('away_team_goals')), 'goalsOwn'],
     ],
-    where: { homeTeamId: idTeam,
+    where: { awayTeamId: idTeam,
       inProgress: false,
       homeTeamGoals: {
         [Op.gt]: sequelize.col('away_team_goals'),
@@ -48,7 +48,7 @@ async function draws(idTeam: number, teamName: string): Promise<IDraws> {
       [sequelize.fn('SUM', sequelize.col('home_team_goals')), 'goalsFavor'],
       [sequelize.fn('SUM', sequelize.col('away_team_goals')), 'goalsOwn'],
     ],
-    where: { homeTeamId: idTeam,
+    where: { awayTeamId: idTeam,
       inProgress: false,
       awayTeamGoals: {
         [Op.eq]: sequelize.col('home_team_goals'),
@@ -60,11 +60,25 @@ async function draws(idTeam: number, teamName: string): Promise<IDraws> {
   return { name: teamName, ...draw.dataValues };
 }
 
+function calculateEfficiency(Draws: IDraws, Losses: ILosses, Victories: IVictories):
+IEfficiency {
+  const points = (Draws.totalDraws * 1) + (Victories.totalVictories * 3);
+  const games = (Victories.totalVictories + Losses.totalLosses + Draws.totalDraws);
+  const goalsFavor = Number(Victories.goalsOwn)
+  + Number(Losses.goalsOwn) + Number(Draws.goalsOwn);
+  const goalsOwn = Number(Victories.goalsFavor)
+  + Number(Losses.goalsFavor) + Number(Draws.goalsFavor);
+
+  const efficiency = Number(((points / (games * 3)) * 100).toFixed(2));
+  const goalsBalance = goalsFavor - goalsOwn;
+  return { goalsBalance, efficiency, goalsOwn, goalsFavor };
+}
+
 export default async function awayData(idTeam: number, teamName: string): Promise<ILeaderboard> {
   const awayDraws = await draws(idTeam, teamName);
   const awayLosses = await losses(idTeam, teamName);
   const awayVictories = await victories(idTeam, teamName);
-
+  const eff = calculateEfficiency(awayDraws, awayLosses, awayVictories);
   const away = {
     name: teamName,
     totalPoints: (awayVictories.totalVictories * 3) + (awayDraws.totalDraws * 1),
@@ -72,10 +86,10 @@ export default async function awayData(idTeam: number, teamName: string): Promis
     totalVictories: awayVictories.totalVictories,
     totalLosses: awayLosses.totalLosses,
     totalDraws: awayDraws.totalDraws,
-    goalsOwn: Number(awayVictories.goalsOwn)
-    + Number(awayLosses.goalsOwn) + Number(awayDraws.goalsOwn),
-    goalsFavor: Number(awayVictories.goalsFavor)
-    + Number(awayLosses.goalsFavor) + Number(awayDraws.goalsFavor),
+    goalsOwn: eff.goalsOwn,
+    goalsFavor: eff.goalsFavor,
+    goalsBalance: eff.goalsBalance,
+    efficiency: eff.efficiency,
   };
   return away;
 }

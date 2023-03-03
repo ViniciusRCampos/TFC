@@ -16,13 +16,16 @@ export interface ILosses extends IGoals{
   totalLosses: number,
 }
 
-export default interface ILeaderboard {
+export interface IEfficiency extends IGoals{
+  goalsBalance: number,
+  efficiency: number,
+}
+
+export default interface ILeaderboard extends IEfficiency{
   name: string,
   totalPoints: number,
   totalGames: number,
   totalLosses: number,
   totalVictories: number,
   totalDraws: number,
-  goalsFavor: number,
-  goalsOwn: number,
 }

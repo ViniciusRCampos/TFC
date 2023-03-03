@@ -1,5 +1,5 @@
 import ILeaderboard from './ILeaderboard';
 
 export default interface IServiceLeaderboard {
-  board(): Promise<ILeaderboard[] | null>
+  board(path: string | null): Promise<ILeaderboard[] | null>
 }
