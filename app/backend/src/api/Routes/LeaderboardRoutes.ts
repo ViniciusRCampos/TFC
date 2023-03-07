@@ -9,9 +9,11 @@ const leaderboardController = new LeaderboardController(leaderboardService);
 leaderboardRoute.get('/leaderboard/home', (req: Request, res: Response) => {
   leaderboardController.board(req, res);
 });
+
 leaderboardRoute.get('/leaderboard/away', (req: Request, res: Response) => {
   leaderboardController.board(req, res);
 });
+
 leaderboardRoute.get('/leaderboard', (req: Request, res: Response) => {
   leaderboardController.board(req, res);
 });
