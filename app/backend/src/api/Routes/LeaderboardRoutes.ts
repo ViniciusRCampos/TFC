@@ -19,3 +19,4 @@ leaderboardRoute.get('/leaderboard', (req: Request, res: Response) => {
 });
 
 export default leaderboardRoute;
+// 29 e 30 passando nos testes
